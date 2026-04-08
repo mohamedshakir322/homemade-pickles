@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="webTitle">Homemade Delights | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #fb8500;
+            --primary-light: #ffb703;
+            --secondary: #023047;
+            --text-main: #1a1a1a;
+            --bg-body: #f8f9fa;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { margin: 0; background: var(--bg-body); color: var(--text-main); overflow-x: hidden; }
+
+        /* Animations */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .reveal { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* Navigation - Advanced Glass Design */
+        nav {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0.8rem 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        .brand-box { display: flex; align-items: center; gap: 12px; }
+        #navLogo { 
+            width: 48px; height: 48px; border-radius: 14px; 
+            object-fit: cover; border: 2px solid var(--primary); 
+            transition: 0.3s;
+        }
+
+        /* View Management */
+        .view { display: none; padding: 20px 6%; max-width: 1400px; margin: 0 auto; }
+        .active { display: block; }
+
+        /* Modern Cards */
+        .glass-card {
+            background: var(--white);
+            border-radius: 28px;
+            padding: 35px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        /* Inputs & Interactive Elements */
+        input, textarea {
+            width: 100%; padding: 15px; margin: 10px 0;
+            border: 1.5px solid #eee; border-radius: 16px;
+            background: #fdfdfd; font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        input:focus { border-color: var(--primary); outline: none; background: #fff; }
+
+        .btn {
+            width: 100%; padding: 16px; border-radius: 16px; border: none;
+            font-weight: 700; cursor: pointer; transition: 0.4s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white; box-shadow: 0 8px 20px rgba(251, 133, 0, 0.25);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(251, 133, 0, 0.35); }
+
+        /* Shop Layout - High End Grid */
+        .product-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .prod-card { 
+            background: var(--white); border-radius: 24px; 
+            overflow: hidden; box-shadow: var(--shadow);
+            transition: 0.4s; position: relative;
+        }
+        .prod-card:hover { transform: translateY(-12px); }
+
+        /* Advanced Auto-Slider */
+        .slider { width: 100%; height: 260px; overflow: hidden; position: relative; }
+        .slide-track { display: flex; width: 400%; height: 100%; animation: kenburns 16s infinite; }
+        .slide-track img { width: 25%; height: 100%; object-fit: cover; }
+        
+        @keyframes kenburns {
+            0%, 20% { transform: translateX(0); }
+            25%, 45% { transform: translateX(-25%); }
+            50%, 70% { transform: translateX(-50%); }
+            75%, 95% { transform: translateX(-75%); }
+            100% { transform: translateX(0); }
+        }
+
+        .badge {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255,255,255,0.9); padding: 6px 14px;
+            border-radius: 12px; font-weight: 800; color: var(--primary);
+            font-size: 0.8rem; z-index: 10;
+        }
+
+        /* Admin Dashboard - Layout */
+        .admin-grid { display: grid; grid-template-columns: 380px 1fr; gap: 30px; }
+        @media (max-width: 950px) { .admin-grid { grid-template-columns: 1fr; } }
+
+        /* Modal */
+        #loginModal {
+            position: fixed; inset: 0; background: rgba(2, 48, 71, 0.6);
+            backdrop-filter: blur(8px); display: none; place-items: center; z-index: 2000;
+        }
+
+        /* Order Success Animation Style */
+        .success-toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #27ae60; color: white; padding: 12px 30px; 
+            border-radius: 50px; display: none; z-index: 3000;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand-box">
+            <img id="navLogo" src="https://via.placeholder.com/100" alt="Logo">
+            <h2 id="navName" style="margin:0; font-weight: 800; letter-spacing: -0.5px;">Loading...</h2>
+        </div>
+        <button style="border:none; background:none; cursor:pointer; font-size:1.4rem; filter: grayscale(1);" onclick="showLogin()">⚙️</button>
+    </nav>
+
+    <main id="viewGate" class="view">
+        <div class="glass-card reveal" style="max-width:480px; margin: 40px auto; text-align:center;">
+            <div style="font-size: 3rem; margin-bottom: 10px;">🌶️</div>
+            <h1 style="margin:0; font-weight: 800;">Exclusive Access</h1>
+            <p style="color: #666; margin-bottom: 25px;">Provide your details to explore Shakir's premium homemade collection.</p>
+            <input type="text" id="cName" placeholder="What is your name?">
+            <input type="text" id="cPhone" placeholder="WhatsApp Number">
+            <textarea id="cAddr" placeholder="Where should we deliver?" rows="3"></textarea>
+            <button class="btn btn-primary" onclick="submitGate()">Start Shopping</button>
+        </div>
+    </main>
+
+    <main id="viewShop" class="view reveal">
+        <div style="margin-bottom: 30px;">
+            <h2 style="margin:0; font-weight: 800; font-size: 1.8rem;">Fresh Today</h2>
+            <p style="color: #777;">Handmade with love and premium spices.</p>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+    </main>
+
+    <main id="viewAdmin" class="view reveal">
+        <div class="admin-grid">
+            <div class="sidebar">
+                <div class="glass-card">
+                    <h3 style="margin-top:0;">Branding Settings</h3>
+                    <label style="font-size: 0.8rem; font-weight: 600;">Website Name</label>
+                    <input type="text" id="setWebName">
+                    <label style="font-size: 0.8rem; font-weight: 600;">Logo Upload</label>
+                    <input type="file" accept="image/*" onchange="smartCompress(this, 'logo')">
+                    <label style="font-size: 0.8rem; font-weight: 600;">WhatsApp (Include 94)</label>
+                    <input type="text" id="setWA" placeholder="e.g. 94771234567">
+                    <button class="btn btn-primary" onclick="saveSettings()">Update Branding</button>
+                </div>
+                
+                <div class="glass-card" style="margin-top: 20px;">
+                    <h3 style="margin-top:0;">Active Customers</h3>
+                    <div id="customerList" style="max-height: 250px; overflow-y:auto;"></div>
+                </div>
+            </div>
+
+            <div class="main-admin">
+                <div class="glass-card">
+                    <h3 style="margin-top:0;">Add New Product</h3>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <input type="text" id="pName" placeholder="Product Title">
+                        <input type="number" id="pPrice" placeholder="Price (LKR)">
+                    </div>
+                    <textarea id="pDesc" placeholder="Describe the taste, ingredients, and quantity..." rows="3"></textarea>
+                    <p style="font-size: 0.75rem; color: #888; margin: 10px 0 5px 0;">Upload up to 4 Gallery Photos:</p>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <input type="file" onchange="smartCompress(this, 0)">
+                        <input type="file" onchange="smartCompress(this, 1)">
+                        <input type="file" onchange="smartCompress(this, 2)">
+                        <input type="file" onchange="smartCompress(this, 3)">
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:20px;" onclick="saveProduct()">Publish to Shop</button>
+                </div>
+
+                <div class="glass-card" style="margin-top: 30px;">
+                    <h3>Inventory Management</h3>
+                    <div id="inventory"></div>
+                </div>
+            </div>
+        </div>
+        <button class="btn" style="background:#000; color:white; max-width: 250px; margin: 40px auto;" onclick="location.reload()">🔒 Secure Logout</button>
+    </main>
+
+    <div id="loginModal">
+        <div class="glass-card" style="width:340px; text-align:center;">
+            <h2 style="margin:0;">Staff Only</h2>
+            <p style="color: #666; font-size: 0.85rem;">Shakir, please authenticate.</p>
+            <input type="text" id="adminUser" placeholder="Username">
+            <input type="password" id="adminPass" placeholder="Password">
+            <button class="btn btn-primary" onclick="doLogin()">Unlock Dashboard</button>
+            <button class="btn" style="background:none; color: #999;" onclick="hideLogin()">Cancel</button>
+        </div>
+    </div>
+
+    <div id="toast" class="success-toast">Order Successfully Sent!</div>
+
+    <script>
+        // Database Initialization
+        let products = JSON.parse(localStorage.getItem('pData')) || [];
+        let settings = JSON.parse(localStorage.getItem('sData')) || { name: "Homemade Delights", logo: "", wa: "94" };
+        let customers = JSON.parse(localStorage.getItem('cData')) || [];
+        let tempImgs = ["", "", "", ""];
+
+        // Smart Compression Engine (Critical for Large Gallery Photos)
+        function smartCompress(input, target) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Optimized dimensions for mobile clarity but small storage footprint
+                    const maxWidth = 700;
+                    const scale = maxWidth / Math.max(img.width, img.height);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const compressed = canvas.toDataURL('image/jpeg', 0.6); // 60% quality is perfect balance
+                    
+                    if(target === 'logo') settings.logo = compressed;
+                    else tempImgs[target] = compressed;
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+
+        // View Logic
+        function switchView(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function submitGate() {
+            const n = document.getElementById('cName').value;
+            const p = document.getElementById('cPhone').value;
+            const a = document.getElementById('cAddr').value;
+            if(n && p && a) {
+                customers.unshift({n, p, a, time: new Date().toLocaleString()});
+                localStorage.setItem('cData', JSON.stringify(customers));
+                localStorage.setItem('isRegistered', 'true');
+                renderShop();
+                switchView('viewShop');
+            } else { alert("Please fill everything to enjoy our treats!"); }
+        }
+
+        function saveSettings() {
+            settings.name = document.getElementById('setWebName').value;
+            settings.wa = document.getElementById('setWA').value;
+            localStorage.setItem('sData', JSON.stringify(settings));
+            applyUI();
+            alert("Business Branding Updated!");
+        }
+
+        function saveProduct() {
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            if(!name || !price) return alert("Product needs a name and price!");
+            
+            const newProd = {
+                name, price,
+                desc: document.getElementById('pDesc').value,
+                imgs: [...tempImgs]
+            };
+            
+            products.unshift(newProd);
+            localStorage.setItem('pData', JSON.stringify(products));
+            location.reload(); 
+        }
+
+        function deleteProduct(i) {
+            if(confirm("Permanently remove this product?")) {
+                products.splice(i, 1);
+                localStorage.setItem('pData', JSON.stringify(products));
+                loadAdmin();
+            }
+        }
+
+        function renderShop() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = products.length ? products.map(p => `
+                <div class="prod-card animate">
+                    <div class="badge">In Stock</div>
+                    <div class="slider">
+                        <div class="slide-track">${p.imgs.map(i => `<img src="${i || 'https://via.placeholder.com/400?text=Shakirs+Treats'}">`).join('')}</div>
+                    </div>
+                    <div style="padding:22px;">
+                        <h3 style="margin:0 0 10px 0; font-weight:800;">${p.name}</h3>
+                        <p style="color:#666; font-size:0.85rem; margin-bottom:15px; min-height:40px;">${p.desc}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:1.4rem; font-weight:800; color:var(--secondary);">Rs. ${p.price}</span>
+                            <button class="btn btn-primary" style="width:auto; padding:10px 20px;" onclick="placeOrder('${p.name}')">Buy Now</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') : `<div class="glass-card" style="grid-column: 1/-1; text-align:center;">No products available yet. Check back soon!</div>`;
+        }
+
+        function placeOrder(pName) {
+            const msg = encodeURIComponent(`Hello Shakir! I'm interested in buying your ${pName}. Please send details.`);
+            window.open(`https://wa.me/${settings.wa}?text=${msg}`);
+            document.getElementById('toast').style.display = 'block';
+            setTimeout(() => document.getElementById('toast').style.display = 'none', 3000);
+        }
+
+        function loadAdmin() {
+            document.getElementById('setWebName').value = settings.name;
+            document.getElementById('setWA').value = settings.wa;
+            
+            document.getElementById('inventory').innerHTML = products.map((p, i) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #f0f0f0;">
+                    <span><b>${p.name}</b> <br><small>Rs. ${p.price}</small></span> 
+                    <button onclick="deleteProduct(${i})" style="color:red; border:none; background:none; cursor:pointer; font-weight:600;">Remove</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('customerList').innerHTML = customers.map(c => `
+                <div style="padding:10px; border-radius:12px; background:#f9f9f9; margin-bottom:10px; font-size:0.8rem;">
+                    <b>${c.n}</b> (${c.p})<br>${c.a}<br><small style="color:#aaa;">${c.time}</small>
+                </div>
+            `).join('');
+        }
+
+        function applyUI() {
+            document.getElementById('navName').innerText = settings.name;
+            document.getElementById('navLogo').src = settings.logo || 'https://via.placeholder.com/100?text=Logo';
+            document.getElementById('webTitle').innerText = settings.name;
+        }
+
+        function showLogin() { document.getElementById('loginModal').style.display = 'grid'; }
+        function hideLogin() { document.getElementById('loginModal').style.display = 'none'; }
+        
+        function doLogin() {
+            if(document.getElementById('adminUser').value === 'shakir' && document.getElementById('adminPass').value === '0000') {
+                hideLogin(); switchView('viewAdmin'); loadAdmin();
+            } else { alert("Access Denied."); }
+        }
+
+        window.onload = () => {
+            applyUI();
+            if(localStorage.getItem('isRegistered')) {
+                renderShop(); switchView('viewShop');
+            } else {
+                switchView('viewGate');
+            }
+        };
+    </script>
+</body>
+</html>
